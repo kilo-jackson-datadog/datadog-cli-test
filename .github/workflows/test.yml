@@ -10,10 +10,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl gnupg ca-certificates
+
+      - name: Add Datadog APT repo
+        run: |
+          DD_APT_KEY_URL="https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public"
+          curl -fsSL "$DD_APT_KEY_URL" | sudo gpg --dearmor -o /usr/share/keyrings/datadog-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/datadog-archive-keyring.gpg] https://apt.datadoghq.com/ stable datadog-security-cli" | sudo tee /etc/apt/sources.list.d/datadog-security-cli.list
+
       - name: Install Datadog Security CLI
         run: |
-          sudo apt update
-          sudo apt install datadog-security-cli -y
+          sudo apt-get update
+          sudo apt-get install -y datadog-security-cli
 
       - name: Verify CLI
         run: |
