@@ -1,0 +1,21 @@
+name: Test Datadog Security CLI
+
+on: [push]
+
+jobs:
+  test-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Datadog Security CLI
+        run: |
+          sudo apt update
+          sudo apt install datadog-security-cli -y
+
+      - name: Verify CLI
+        run: |
+          which datadog-security-cli
+          datadog-security-cli version
