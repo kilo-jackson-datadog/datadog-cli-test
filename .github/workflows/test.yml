@@ -1,10 +1,15 @@
 name: Test Datadog Security CLI
 
-on: [push]
+on:
+  workflow_dispatch:
 
 jobs:
   test-cli:
     runs-on: ubuntu-latest
+    env:
+      DD_API_KEY: ${{ secrets.DD_API_KEY }}
+      DD_APP_KEY: ${{ secrets.DD_APP_KEY }}
+      DD_SITE: ${{ secrets.DD_SITE }}
 
     steps:
       - name: Checkout repo
@@ -30,3 +35,11 @@ jobs:
         run: |
           which datadog-security-cli
           datadog-security-cli version
+
+      - name: Pull nginx image
+        run: |
+          docker pull nginx:1.25
+
+      - name: Scan image and send results to Datadog
+        run: |
+          datadog-security-cli image nginx:1.25
